@@ -42,12 +42,12 @@ public class ArcConfigurationFactory {
         return null;
     }
     
-    public static synchronized ArcConfiguration addArcConfiguration(int index, String prefix, String serial, int knobs, ArcFrame arcFrame) {
+    public static synchronized ArcConfiguration addArcConfiguration(int index, String prefix, String serial, int knobs, ArcFrame arcFrame, ArrayList<MIDIPageChangeRule> midiPageChangeRules) {
         Configuration configuration = Main.main.configuration;
         if (configuration.getArcConfigurations() == null) {
             configuration.setArcConfigurations(new HashMap<Integer, ArcConfiguration>());
         }
-        ArcConfiguration arcConfiguration = new ArcConfiguration(index, prefix, serial, knobs, arcFrame);
+        ArcConfiguration arcConfiguration = new ArcConfiguration(index, prefix, serial, knobs, arcFrame, midiPageChangeRules);
         configuration.getArcConfigurations().put(index, arcConfiguration);
         arcConfiguration.setFrameTitle();
         return arcConfiguration;

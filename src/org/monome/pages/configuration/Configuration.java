@@ -251,7 +251,7 @@ public class Configuration implements Serializable {
 		return monome;
 	}
 	
-    public ArcConfiguration addArcConfiguration(int index, String prefix, String serial, int knobs) {
+    public ArcConfiguration addArcConfiguration(int index, String prefix, String serial, int knobs, ArrayList<MIDIPageChangeRule> midiPageChangeRules) {
         ArcFrame arcFrame = new ArcFrame(index);
         try {
             arcFrame.setSelected(true);
@@ -260,7 +260,7 @@ public class Configuration implements Serializable {
         }
         MainGUI.getDesktopPane().add(arcFrame);
         arcFrame.moveToFront();
-        ArcConfiguration arc = ArcConfigurationFactory.addArcConfiguration(index, prefix, serial, knobs, arcFrame);
+        ArcConfiguration arc = ArcConfigurationFactory.addArcConfiguration(index, prefix, serial, knobs, arcFrame, midiPageChangeRules);
         this.initArcSerialOSC(arc);
         return arc;
     }
@@ -274,7 +274,8 @@ public class Configuration implements Serializable {
         }
         MainGUI.getDesktopPane().add(arcFrame);
         arcFrame.moveToFront();
-        ArcConfiguration arc = ArcConfigurationFactory.addArcConfiguration(index, prefix, serial, knobs, arcFrame);
+        ArrayList<MIDIPageChangeRule> midiPageChangeRules = new ArrayList<MIDIPageChangeRule>();
+        ArcConfiguration arc = ArcConfigurationFactory.addArcConfiguration(index, prefix, serial, knobs, arcFrame, midiPageChangeRules);
         arc.serialOSCPort = port;
         arc.serialOSCHostname = hostName;
         this.initArcSerialOSC(arc);
@@ -1366,7 +1367,7 @@ public class Configuration implements Serializable {
 
 					
 					// create the new arc configuration and display its window
-					ArcConfiguration arcConfig = addArcConfiguration(i, prefix, serial, Integer.parseInt(knobs));
+					ArcConfiguration arcConfig = addArcConfiguration(i, prefix, serial, Integer.parseInt(knobs), midiPageChangeRules);
 					arcConfig.serialOSCHostname = serialOSCHostName;
 					arcConfig.deviceFrame.updateMidiInMenuOptions(MidiDeviceFactory.getMidiInOptions());
 					arcConfig.deviceFrame.updateMidiOutMenuOptions(MidiDeviceFactory.getMidiOutOptions());

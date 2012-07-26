@@ -74,12 +74,13 @@ public class ArcConfiguration extends OSCDeviceConfiguration<ArcPage> {
 
     private int tickNum;
     
-    public ArcConfiguration(int index, String prefix, String serial, int knobs, ArcFrame arcFrame) {
+    public ArcConfiguration(int index, String prefix, String serial, int knobs, ArcFrame arcFrame, ArrayList<MIDIPageChangeRule> midiPageChangeRules) {
         super(index, prefix, serial);
 
         this.knobs = knobs;
         this.arcFrame = arcFrame;
         this.deviceFrame = arcFrame;
+        this.midiPageChangeRules = midiPageChangeRules;
         if (arcFrame != null) {
             arcFrame.updateMidiInMenuOptions(MidiDeviceFactory.getMidiInOptions());
             arcFrame.updateMidiOutMenuOptions(MidiDeviceFactory.getMidiOutOptions());

@@ -271,46 +271,82 @@ public class MIDIFadersPage implements Page, Serializable {
 			cc = msg[1];
 			val = msg[2];
 		}
-		boolean foundFader = false;
-		int x = 0;
-		for (x = 0; x < monome.sizeX; x++) {
-			if (x + ccOffset == cc) {
-				foundFader = true;
-				break;
-			}
-		}
-		if (!foundFader) {
-			return;
-		}
-		int endY = 0;
-		for (int y = 0; y < this.monome.sizeY; y++) {
-			if (this.monome.sizeY == 8) {
-				if (val <= this.buttonValuesSmall[y]) {
-					endY = y;
-				}
-			} else {
-				if (val <= this.buttonValuesLarge[y]) {
-					endY = y;
-				}
-			}
-		}
-		if (endY > monome.sizeY) {
-			endY = monome.sizeY;
-		}
-
-		ArrayList<Integer> intArgs = new ArrayList<Integer>();
-		intArgs.add(new Integer(x));
-		intArgs.add(new Integer(0));
-		intArgs.add(new Integer(0));
-		for (int y = this.monome.sizeY - 1; y > -1; y--) {
-			if (y >= endY) {
-				this.monome.led(x, y, 1, this.index);
-			} else {
-				this.monome.led(x, y, 0, this.index);
-			}
-		}
 		
-		this.buttonFaders[x] = endY;
+		if (horizontal == true) {
+			boolean foundFader = false;
+			int y = 0;
+			for (y = 0; y < monome.sizeY; y++) {
+				if (y + ccOffset == cc) {
+					foundFader = true;
+					break;
+				}
+			}
+			if (!foundFader) {
+				return;
+			}
+			int endX = 0;
+			for (int x = 0; x < this.monome.sizeX; x++) {
+				if (this.monome.sizeY == 8) {
+					if (val <= this.buttonValuesSmall[x]) {
+						endX = x;
+					}
+				} else {
+					if (val <= this.buttonValuesLarge[x]) {
+						endX = x;
+					}
+				}
+			}
+			if (endX > monome.sizeX) {
+				endX = monome.sizeX;
+			}
+	
+			for (int x = this.monome.sizeX - 1; y > -1; y--) {
+				if (x >= endX) {
+					this.monome.led(x, y, 1, this.index);
+				} else {
+					this.monome.led(x, y, 0, this.index);
+				}
+			}
+			
+			this.buttonFaders[y] = endX;
+		} else {
+			boolean foundFader = false;
+			int x = 0;
+			for (x = 0; x < monome.sizeX; x++) {
+				if (x + ccOffset == cc) {
+					foundFader = true;
+					break;
+				}
+			}
+			if (!foundFader) {
+				return;
+			}
+			int endY = 0;
+			for (int y = 0; y < this.monome.sizeY; y++) {
+				if (this.monome.sizeY == 8) {
+					if (val <= this.buttonValuesSmall[y]) {
+						endY = y;
+					}
+				} else {
+					if (val <= this.buttonValuesLarge[y]) {
+						endY = y;
+					}
+				}
+			}
+			if (endY > monome.sizeY) {
+				endY = monome.sizeY;
+			}
+	
+			for (int y = this.monome.sizeY - 1; y > -1; y--) {
+				if (y >= endY) {
+					this.monome.led(x, y, 1, this.index);
+				} else {
+					this.monome.led(x, y, 0, this.index);
+				}
+			}
+			
+			this.buttonFaders[x] = endY;
+		}
 		return;
 	}
 
