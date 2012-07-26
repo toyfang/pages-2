@@ -3,7 +3,9 @@
   <property name="src" value="./src"/>
   <property name="build" value="./build"/>
   <property name="lib.dir" value="./lib"/>
+  <property name="filename" value="${ant.project.name}-${pages.version}"/>
   <property name="dist" value="./dist"/>
+  <property name="release" value="${dist}/${filename}"/>
   <path id="classpath">
     <fileset dir="${lib.dir}" includes="**/*.jar"/>
   </path>
@@ -20,7 +22,8 @@
     <jar destfile="${build}/jar/${ant.project.name}.jar" basedir="${build}/classes"/>
   </target>
   <target name="package" depends="compile, jar">
-    <jar destfile="${dist}/${ant.project.name}-${pages.version}.jar" basedir="${build}" includes="**/*.*">
+    <mkdir dir="${release}"/>
+    <jar destfile="${release}/${filename}.jar" basedir="${build}" includes="**/*.*">
       <manifest>
 	 <attribute name="Main-Class" value="org.monome.pages.Main" />
          <attribute name="Pages-Version" value="${pages.version}" />
@@ -28,17 +31,18 @@
       <zipgroupfileset dir="${lib.dir}" includes="*.jar" />
       <zipgroupfileset dir="${build}/jar" includes="${ant.project.name}.jar" />
     </jar>
-    <mkdir dir="${dist}/scripts"/>
-    <copy todir="${dist}/scripts">
+    <mkdir dir="${release}/scripts"/>
+    <copy todir="${release}/scripts">
       <fileset dir="scripts" includes="**/*"/>
     </copy>
-    <copy todir="${dist}">
+    <copy todir="${release}">
       <fileset dir="LiveOSC" includes="**/*"/>
     </copy>
-    <copy todir="${dist}">
+    <copy todir="${release}">
       <fileset dir="." includes="README.md"/>
       <globmapper from="README.md" to="README.txt"/>
     </copy>
+    <zip destfile="${dist}/${filename}.zip" basedir="${dist}"/>
   </target>
   <target name="run" depends="package">
     <java jar="build/jar/pages.jar" fork="true"/>
