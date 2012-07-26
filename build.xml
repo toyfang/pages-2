@@ -1,0 +1,46 @@
+<project name="pages">
+  <property name="pages.version" value="0.2a38"/>
+  <property name="src" value="./src"/>
+  <property name="build" value="./build"/>
+  <property name="lib.dir" value="./lib"/>
+  <property name="dist" value="./dist"/>
+  <path id="classpath">
+    <fileset dir="${lib.dir}" includes="**/*.jar"/>
+  </path>
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+  <target name="compile">
+    <mkdir dir="${build}/classes"/>
+    <javac srcdir="${src}" destdir="${build}/classes" classpathref="classpath"/>
+  </target>
+  <target name="jar" depends="compile">
+    <mkdir dir="${build}/jar"/>
+    <jar destfile="${build}/jar/${ant.project.name}.jar" basedir="${build}/classes"/>
+  </target>
+  <target name="package" depends="compile, jar">
+    <jar destfile="${dist}/${ant.project.name}-${pages.version}.jar" basedir="${build}" includes="**/*.*">
+      <manifest>
+	 <attribute name="Main-Class" value="org.monome.pages.Main" />
+         <attribute name="Pages-Version" value="${pages.version}" />
+      </manifest>
+      <zipgroupfileset dir="${lib.dir}" includes="*.jar" />
+      <zipgroupfileset dir="${build}/jar" includes="${ant.project.name}.jar" />
+    </jar>
+    <mkdir dir="${dist}/scripts"/>
+    <copy todir="${dist}/scripts">
+      <fileset dir="scripts" includes="**/*"/>
+    </copy>
+    <copy todir="${dist}">
+      <fileset dir="LiveOSC" includes="**/*"/>
+    </copy>
+    <copy todir="${dist}">
+      <fileset dir="." includes="README.md"/>
+      <globmapper from="README.md" to="README.txt"/>
+    </copy>
+  </target>
+  <target name="run" depends="package">
+    <java jar="build/jar/pages.jar" fork="true"/>
+  </target>
+</project>
