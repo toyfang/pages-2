@@ -28,6 +28,24 @@
 	 <attribute name="Main-Class" value="org.monome.pages.Main" />
          <attribute name="Pages-Version" value="${pages.version}" />
       </manifest>
+      <service type="org.monome.pages.pages.Page">
+        <provider classname="org.monome.pages.pages.AbletonClipLauncherPage"/>
+        <provider classname="org.monome.pages.pages.AbletonLiveLooperPage"/>
+        <provider classname="org.monome.pages.pages.AbletonSceneLauncherPage"/>
+        <provider classname="org.monome.pages.pages.ExternalApplicationPage"/>
+        <provider classname="org.monome.pages.pages.GroovyPage"/>
+        <provider classname="org.monome.pages.pages.MachineDrumInterfacePage"/>
+        <provider classname="org.monome.pages.pages.MIDIKeyboardPage"/>
+        <provider classname="org.monome.pages.pages.MIDIFadersPage"/>
+        <provider classname="org.monome.pages.pages.MIDIGeneratorPage"/>
+        <provider classname="org.monome.pages.pages.MIDIPadsPage"/>
+        <provider classname="org.monome.pages.pages.MIDISequencerPage"/>
+        <provider classname="org.monome.pages.pages.MIDISequencerPolyPage"/>
+        <provider classname="org.monome.pages.pages.MIDITriggersPage"/>
+        <provider classname="org.monome.pages.pages.QuadrantsPage"/>
+        <provider classname="org.monome.pages.pages.arc.ExternalApplicationPage"/>
+        <provider classname="org.monome.pages.pages.arc.GroovyPage"/>
+      </service>
       <zipgroupfileset dir="${lib.dir}" includes="*.jar" />
       <zipgroupfileset dir="${build}/jar" includes="${ant.project.name}.jar" />
     </jar>
