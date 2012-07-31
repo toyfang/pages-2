@@ -297,6 +297,16 @@ public class QuadrantsPage implements Page, Serializable {
 	}
 	
 	public void handleAbletonEvent() {
+		for (int i = 0; i < quadrantConfigurations.size(); i++) {
+			for (int j = 0; j < quadrantConfigurations.get(i).getNumQuads(); j++) {
+				FakeMonomeConfiguration monomeConfig = quadrantConfigurations.get(i).getMonomeConfiguration(j);
+				if (monomeConfig.pages != null) {
+					for (int k = 0; k < monomeConfig.pages.size(); k++) {
+						monomeConfig.pages.get(k).handleAbletonEvent();
+					}
+				}
+			}
+		}
 	}
 
 	public void onBlur() {
