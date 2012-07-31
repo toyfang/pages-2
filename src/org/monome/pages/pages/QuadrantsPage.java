@@ -296,8 +296,7 @@ public class QuadrantsPage implements Page, Serializable {
 		MonomeConfigurationFactory.getMonomeConfiguration(index).deviceFrame.redrawPagePanel(this);
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return true;
+	public void handleAbletonEvent() {
 	}
 
 	public void onBlur() {

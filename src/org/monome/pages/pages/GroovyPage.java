@@ -212,15 +212,14 @@ public class GroovyPage implements Page, Serializable {
 		return index;
 	}
 
-	public boolean redrawOnAbletonEvent() {
+	public void handleAbletonEvent() {
 		if (theApp != null) {
 			try {
-				return theApp.redrawOnAbletonEvent();
+				theApp.handleAbletonEvent();
 			} catch (Exception e) {
                 errorLog.addError(e.getMessage());
 			}
 		}
-		return false;
 	}
 	
 	public void defaultText() {

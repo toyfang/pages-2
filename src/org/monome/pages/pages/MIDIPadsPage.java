@@ -250,8 +250,7 @@ public class MIDIPadsPage implements Page, Serializable {
 		return xml;
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return false;
+	public void handleAbletonEvent() {
 	}
 
 	public void onBlur() {

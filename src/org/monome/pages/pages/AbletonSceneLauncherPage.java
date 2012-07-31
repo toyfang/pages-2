@@ -671,8 +671,8 @@ public class AbletonSceneLauncherPage implements Page, Serializable {
 		return index;
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return true;
+	public void handleAbletonEvent() {
+		redrawDevice();
 	}
 
 	public void onBlur() {

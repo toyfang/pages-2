@@ -479,8 +479,7 @@ public class ExternalApplicationPage implements ArcPage, OSCListener, RegisterLi
 		return gui;
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return false;
+	public void handleAbletonEvent() {
 	}
 	
 	public void operationFailed(DNSSDService arg0, int arg1) {

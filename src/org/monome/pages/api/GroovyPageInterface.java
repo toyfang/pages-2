@@ -21,7 +21,7 @@ public interface GroovyPageInterface {
     public MonomeConfiguration monome();
     public int sizeX();
     public int sizeY();
-    public boolean redrawOnAbletonEvent();
+    public void handleAbletonEvent();
     public void setLogger(GroovyErrorLog errorLog);
     public void sendCommand(Command command);
 }

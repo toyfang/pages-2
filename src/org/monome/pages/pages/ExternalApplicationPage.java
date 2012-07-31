@@ -564,8 +564,7 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 		
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return false;
+	public void handleAbletonEvent() {
 	}
 
 	

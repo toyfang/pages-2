@@ -2423,8 +2423,7 @@ public class MIDISequencerPolyPage implements Page, Serializable {
 
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return false;
+	public void handleAbletonEvent() {
 	}
 
 	public void onBlur() {

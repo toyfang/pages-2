@@ -750,8 +750,7 @@ public class MIDITriggersPage implements Page, Serializable {
 		
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return true;
+	public void handleAbletonEvent() {
 	}
 
 	public void onBlur() {

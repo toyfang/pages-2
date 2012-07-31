@@ -198,9 +198,7 @@ public class MonomeConfiguration extends OSCDeviceConfiguration<Page> {
 			return;
 		}
 		for (int i = 0; i < this.pages.size(); i++) {
-			if (pages.get(i).redrawOnAbletonEvent()) {
-				pages.get(i).redrawDevice();
-			}
+			pages.get(i).handleAbletonEvent();
 		}
 	}
 	

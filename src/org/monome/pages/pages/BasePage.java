@@ -36,7 +36,7 @@ public interface BasePage {
 
     JPanel getPanel();
 
-    boolean redrawOnAbletonEvent();
+    void handleAbletonEvent();
 
     Dimension getOrigGuiDimension();
 

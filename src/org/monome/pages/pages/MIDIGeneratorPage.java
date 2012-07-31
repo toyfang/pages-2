@@ -336,8 +336,7 @@ public class MIDIGeneratorPage implements Page, Serializable {
 		return -1;
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return false;
+	public void handleAbletonEvent() {
 	}
 
 	public void onBlur() {

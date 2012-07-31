@@ -313,8 +313,7 @@ public class MachineDrumInterfacePage implements Page, Serializable {
 		return index;
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return false;
+	public void handleAbletonEvent() {
 	}
 	
 	public void led(int x, int y, int value, int index) {

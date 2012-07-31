@@ -49,7 +49,7 @@ class SimpleClipLauncherPage extends GroovyAPI {
     void clockReset() {
     }
 
-    public boolean redrawOnAbletonEvent() {
-        return true
+    public void handleAbletonEvent() {
+        redraw()
     }
 }

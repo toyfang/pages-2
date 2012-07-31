@@ -264,8 +264,8 @@ public class GroovyAPI implements GroovyPageInterface {
 		return Main.main.configuration.getAbletonControl();
 	}
 	
-	public boolean redrawOnAbletonEvent() {
-		return false;
+	public void handleAbletonEvent() {
+		return;
 	}
 	
     public void stop() {
