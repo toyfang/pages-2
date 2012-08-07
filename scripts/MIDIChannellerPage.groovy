@@ -1,13 +1,13 @@
 import org.monome.pages.api.GroovyAPI
 import org.monome.pages.configuration.PatternBank
 
-class MIDIFingersPage extends GroovyAPI {
+class MIDIChannellerPage extends GroovyAPI {
 
     int baseMidiChannel = 0
     def notes = []
 
     void init() {
-        log("MIDIFingersPage starting up")
+        log("MIDIChannellerPage starting up")
         for (int x = 0; x < sizeX(); x++) {
             patterns().ignore(x, sizeY() - 1)
             notes[x] = []
@@ -18,22 +18,21 @@ class MIDIFingersPage extends GroovyAPI {
     }
 
     void stop() {
-        log("MIDIFingersPage shutting down")
+        log("MIDIChannellerPage shutting down")
         patterns().clearIgnore()
     }
 
     void press(int x, int y, int val) {
         if (val == 0) return
         if (y == sizeY() - 1) {
-            if (x < sizeX() / 2) {
-                monome().switchPage(x)
-            } else if (x == sizeX() - 1) {
+            if (x == sizeX() - 1) {
                 return
-            } else {
-                int patternNum = x - sizeX() / 2
-                patterns().handlePress(patternNum);
-                redraw()
             }
+            patterns().handlePress(x);
+            redraw()
+        } else if (y == sizeY() - 2) {
+            baseMidiChannel = x
+            redraw()
         } else {
             int note = ((y * sizeY()) + x)
             int channel = baseMidiChannel + (note / 128)
@@ -44,22 +43,14 @@ class MIDIFingersPage extends GroovyAPI {
     }
 
     void redraw() {
-        for (int x = 0; x < sizeX() / 2; x++) {
-            led(x, sizeY() - 1, monome().curPage == x ? 1 : 0)
-        }
-
         for (int x = 0; x < sizeX(); x++) {
             for (int y = 0; y < sizeY() - 1; y++) {
                 led(x, y, notes[x][y])
             }
         }
-        for (int patternNum = 0; patternNum < sizeX() / 2; patternNum++) {
-            int x = patternNum + sizeX() / 2
-            if (patterns().getPatternState(patternNum) != PatternBank.PATTERN_STATE_EMPTY) {
-                led(x, sizeY() - 1, 1)
-            } else {
-                led(x, sizeY() - 1, 0)
-            }
+        for (int x = 0; x < sizeX(); x++) {
+            led(x, sizeY() - 2, x == baseMidiChannel ? 1 : 0)            
+            led(x, sizeY() - 1, patterns().getPatternState(x) == PatternBank.PATTERN_STATE_EMPTY ? 0 : 1)
         }
     }
 
@@ -70,7 +61,7 @@ class MIDIFingersPage extends GroovyAPI {
         }
         int x = num % sizeX()
         int y = num / sizeY()
-        if (y > sizeY() - 2) {
+        if (y > sizeY() - 3) {
             return
         }
         led(x, y, on)

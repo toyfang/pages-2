@@ -1,5 +1,5 @@
 <project name="pages">
-  <property name="pages.version" value="0.2a39"/>
+  <property name="pages.version" value="0.2a40"/>
   <property name="src" value="./src"/>
   <property name="build" value="./build"/>
   <property name="lib.dir" value="./lib"/>
