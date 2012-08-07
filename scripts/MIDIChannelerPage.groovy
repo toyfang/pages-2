@@ -1,13 +1,13 @@
 import org.monome.pages.api.GroovyAPI
 import org.monome.pages.configuration.PatternBank
 
-class MIDIChannellerPage extends GroovyAPI {
+class MIDIChannelerPage extends GroovyAPI {
 
     int baseMidiChannel = 0
     def notes = []
 
     void init() {
-        log("MIDIChannellerPage starting up")
+        log("MIDIChannelerPage starting up")
         for (int x = 0; x < sizeX(); x++) {
             patterns().ignore(x, sizeY() - 1)
             notes[x] = []
@@ -18,7 +18,7 @@ class MIDIChannellerPage extends GroovyAPI {
     }
 
     void stop() {
-        log("MIDIChannellerPage shutting down")
+        log("MIDIChannelerPage shutting down")
         patterns().clearIgnore()
     }
 
