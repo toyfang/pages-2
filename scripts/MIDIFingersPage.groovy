@@ -23,8 +23,7 @@ class MIDIFingersPage extends GroovyAPI {
     }
 
     void press(int x, int y, int val) {
-        if (val == 0) return
-        if (y == sizeY() - 1) {
+        if (y == sizeY() - 1 && val == 1) {
             if (x < sizeX() / 2) {
                 monome().switchPage(x)
             } else if (x == sizeX() - 1) {
@@ -34,12 +33,14 @@ class MIDIFingersPage extends GroovyAPI {
                 patterns().handlePress(patternNum);
                 redraw()
             }
+        } else if (y == sizeY() - 1 && val == 0) {
+            return
         } else {
             int note = ((y * sizeY()) + x)
             int channel = baseMidiChannel + (note / 128)
+            if (channel > 15) channel = 0
             note = note % 128
-            noteOut(note, 127, channel, 1)
-            noteOut(note, 127, channel, 0)
+            noteOut(note, 127, channel, val)
         }
     }
 
@@ -64,13 +65,17 @@ class MIDIFingersPage extends GroovyAPI {
     }
 
     void note(int num, int velo, int chan, int on) {
-        num += (chan - baseMidiChannel) * 128
+        int baseChan = baseMidiChannel
+        if (baseChan == 15 && chan == 0) {
+            baseChan = -1
+        }
+        num += (chan - baseChan) * 128
         if (num < 0 || num > 255) {
             return
         }
         int x = num % sizeX()
         int y = num / sizeY()
-        if (y > sizeY() - 2) {
+        if (y > sizeY() - 3) {
             return
         }
         led(x, y, on)

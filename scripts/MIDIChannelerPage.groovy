@@ -3,6 +3,8 @@ import org.monome.pages.configuration.PatternBank
 
 class MIDIChannelerPage extends GroovyAPI {
 
+    boolean overdubButton = true
+
     int baseMidiChannel = 0
     def notes = []
 
@@ -23,22 +25,29 @@ class MIDIChannelerPage extends GroovyAPI {
     }
 
     void press(int x, int y, int val) {
-        if (val == 0) return
-        if (y == sizeY() - 1) {
+        if (y == sizeY() - 1 && val == 1) {
             if (x == sizeX() - 1) {
                 return
             }
             patterns().handlePress(x);
             redraw()
-        } else if (y == sizeY() - 2) {
-            baseMidiChannel = x
-            redraw()
+        } else if (y == sizeY() - 1 && val == 0) {
+            return
+        } else if (y == sizeY() - 2 && val == 1) {
+            if (x == sizeX() - 1 && overdubButton) {
+                abletonOut().setOverdub(Math.abs(ableton().getOverdub() - 1))
+            } else {
+                baseMidiChannel = x
+                redraw()
+            }
+        } else if (y == sizeY() - 2 && val == 0) {
+            return
         } else {
             int note = ((y * sizeY()) + x)
             int channel = baseMidiChannel + (note / 128)
+            if (channel > 15) channel = 0
             note = note % 128
-            noteOut(note, 127, channel, 1)
-            noteOut(note, 127, channel, 0)
+            noteOut(note, 127, channel, val)
         }
     }
 
@@ -49,13 +58,24 @@ class MIDIChannelerPage extends GroovyAPI {
             }
         }
         for (int x = 0; x < sizeX(); x++) {
+            if (x == sizeX() - 1 && overdubButton) {
+                redrawOverdubButton()
+            }
             led(x, sizeY() - 2, x == baseMidiChannel ? 1 : 0)            
             led(x, sizeY() - 1, patterns().getPatternState(x) == PatternBank.PATTERN_STATE_EMPTY ? 0 : 1)
         }
     }
 
+    void redrawOverdubButton() {
+        led(sizeX() - 1, sizeY() - 2, ableton().getOverdub())
+    }
+
     void note(int num, int velo, int chan, int on) {
-        num += (chan - baseMidiChannel) * 128
+        int baseChan = baseMidiChannel
+        if (baseChan == 15 && chan == 0) {
+            baseChan = -1
+        }
+        num += (chan - baseChan) * 128
         if (num < 0 || num > 255) {
             return
         }
@@ -66,5 +86,9 @@ class MIDIChannelerPage extends GroovyAPI {
         }
         led(x, y, on)
         notes[x][y] = on
+    }
+
+    void handleAbletonEvent() {
+        redrawOverdubButton()
     }
 }

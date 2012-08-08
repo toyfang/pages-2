@@ -240,7 +240,7 @@ public class GroovyPage implements Page, Serializable {
 				"        led(x, y, val)\n" +
 				"    }\n" +
 				"\n" +
-				"    void redrawDevice() {\n" +
+				"    void redraw() {\n" +
 				"        clear(0)\n" +
 				"        led(0, 0, 1)\n" +
 				"        row(1, 255, 255)\n" +
