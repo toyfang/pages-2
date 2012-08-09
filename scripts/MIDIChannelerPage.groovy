@@ -3,7 +3,7 @@ import org.monome.pages.configuration.PatternBank
 
 class MIDIChannelerPage extends GroovyAPI {
 
-    boolean overdubButton = true
+    boolean overdubButton = false
 
     int baseMidiChannel = 0
     def notes = []
@@ -16,6 +16,9 @@ class MIDIChannelerPage extends GroovyAPI {
             for (int y = 0; y < sizeY(); y++) {
                 notes[x][y] = 0
             }
+        }
+        if (overdubButton) {
+            patterns().ignore(sizeX() - 1, sizeY() - 2)
         }
     }
 

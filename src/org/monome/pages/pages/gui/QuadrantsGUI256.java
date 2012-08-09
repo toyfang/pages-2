@@ -94,6 +94,10 @@ public class QuadrantsGUI256 extends JPanel implements Serializable {
 			quad1LBL = new JLabel();
 			quad1LBL.setBounds(new Rectangle(40, 30, 36, 46));
 			quad1LBL.setText("<html>[#]<br/>[#]</html>");
+		} else {
+			quad1LBL = new JLabel();
+			quad1LBL.setBounds(new Rectangle(40, 30, 36, 46));
+			quad1LBL.setText("<html>[#]</html>");			
 		}
 		this.setSize(343, 174);
 		this.setLayout(null);
@@ -111,9 +115,11 @@ public class QuadrantsGUI256 extends JPanel implements Serializable {
 		this.add(getNewPage1Btn(), null);
 		this.add(getOpenPage1Btn(), null);
 		this.add(page1LBL, null);
-		this.add(page2LBL, null);
-		this.add(getNewPage2Btn(), null);
-		this.add(getOpenPage2Btn(), null);
+		if (this.page.monome.sizeX == 16 || this.page.monome.sizeY == 16) {
+			this.add(page2LBL, null);
+			this.add(getNewPage2Btn(), null);
+			this.add(getOpenPage2Btn(), null);
+		}
 		if (this.page.monome.sizeX == 16 && this.page.monome.sizeY == 16) {
 			this.add(page3LBL, null);
 			this.add(getNewPage3BTN(), null);
@@ -316,12 +322,13 @@ public class QuadrantsGUI256 extends JPanel implements Serializable {
 		}
 		JPanel configPanel = page.quadrantConfigurations.get(selectedQuadConf).getMonomeConfiguration(configNum).pages.get(0).getPanel();
 		Dimension size = configPanel.getSize();
-		size.width += 20;
-		size.height += 20;
+		size.width += 60;
+		size.height += 60;
 		configFrame.setLayout(null);
 		configFrame.add(configPanel);
 		configFrame.setSize(size);
 		configFrame.setVisible(true);
+		configFrame.setResizable(true);
 		MainGUI.getDesktopPane().add(configFrame);
 		MainGUI.getDesktopPane().validate();
 		configFrame.moveToFront();
