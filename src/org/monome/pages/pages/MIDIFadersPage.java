@@ -300,7 +300,7 @@ public class MIDIFadersPage implements Page, Serializable {
 				endX = monome.sizeX;
 			}
 	
-			for (int x = this.monome.sizeX - 1; y > -1; y--) {
+			for (int x = this.monome.sizeX - 1; x > -1; x--) {
 				if (x >= endX) {
 					this.monome.led(x, y, 1, this.index);
 				} else {
