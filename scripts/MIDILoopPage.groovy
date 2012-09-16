@@ -13,6 +13,7 @@ class MIDILoopPage extends GroovyAPI {
     int activeBuffer = -1
     int tickNum = -1
     def lengths = []
+    int baseMidiChannel = 12
 
     String prefix = "/m0000226"
 
@@ -139,13 +140,14 @@ class MIDILoopPage extends GroovyAPI {
     }
 
     void note(int num, int velo, int chan, int on) {
+        if (chan != 12) return
         if (velo < 40) velo = 40
         if (activeBuffer >= 0) {
-            int channel = (activeBuffer / 2) + 2
+            int channel = (activeBuffer / 2) + baseMidiChannel
             buffers[activeBuffer].setNote(tickNum % buffers[activeBuffer].length, new MIDINote(num, velo, on))
             noteOut(num, velo, channel, on)
         } else {
-            noteOut(num, velo, 0, on)
+            noteOut(num, velo, baseMidiChannel, on)
         }
     }
 
@@ -170,7 +172,7 @@ class MIDILoopPage extends GroovyAPI {
             def notes = buffers[x].notes[tickNum % buffers[x].length]
             if (notes != null) {
                 for (int i = 0; i < notes.size(); i++) {
-                    int channel = (x / 2) + 2
+                    int channel = (x / 2) + baseMidiChannel
                     noteOut(notes[i].note, notes[i].velocity, channel, notes[i].state)
                     if (notes[i].state == 1) {
                         buffers[x].playingNotes.push(notes[i])
