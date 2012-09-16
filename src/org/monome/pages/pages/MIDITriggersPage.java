@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
@@ -263,9 +264,9 @@ public class MIDITriggersPage implements Page, Serializable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.monome.pages.Page#handleTick()
+	 * @see org.monome.pages.Page#handleTick(MidiDevice device)
 	 */
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 		tickNum++;
 		if (tickNum == 96) {
 			tickNum = 0;

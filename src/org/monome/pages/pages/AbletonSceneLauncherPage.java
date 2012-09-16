@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JPanel;
 
@@ -362,9 +363,9 @@ public class AbletonSceneLauncherPage implements Page, Serializable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.monome.pages.Page#handleTick()
+	 * @see org.monome.pages.Page#handleTick(MidiDevice device)
 	 */
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 		tickNum++;
 		if (tickNum == 96) {
 			tickNum = 0;

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
@@ -338,7 +339,7 @@ public class MachineDrumInterfacePage implements Page, Serializable {
 		}
 	}
 	
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 		if (!gui.syncCB.isSelected()) {
 			return;
 		}

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JPanel;
 
@@ -165,7 +166,7 @@ public class MIDIGeneratorPage implements Page, Serializable {
 		tickNum = 0;
 	}
 
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 		tickNum++;
 		if (tickNum % quantization != 0) {
 			return;

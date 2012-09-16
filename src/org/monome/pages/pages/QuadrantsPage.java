@@ -4,12 +4,14 @@ import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JPanel;
 
 import org.monome.pages.configuration.FakeMonomeConfiguration;
 import org.monome.pages.configuration.MonomeConfiguration;
 import org.monome.pages.configuration.MonomeConfigurationFactory;
+import org.monome.pages.configuration.Press;
 import org.monome.pages.configuration.QuadrantConfiguration;
 import org.monome.pages.pages.gui.QuadrantsGUI256;
 import org.w3c.dom.Element;
@@ -119,7 +121,7 @@ public class QuadrantsPage implements Page, Serializable {
 					Node pageNode = pageNL.item(i);
 					String className = pageNode.getAttributes().getNamedItem("class").getNodeValue();
 					Page page = this.quadrantConfigurations.get(gui.selectedQuadConf).getMonomeConfiguration(pageNum).addPage(className);
-					page.configure((Element) pageNode);
+					page.configure((Element) pageNode);					
 				}
 			}
 		}
@@ -204,14 +206,34 @@ public class QuadrantsPage implements Page, Serializable {
 		}
 	}
 
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 		for (int i = 0; i < quadrantConfigurations.size(); i++) {
 			for (int j = 0; j < quadrantConfigurations.get(i).getNumQuads(); j++) {
 				FakeMonomeConfiguration monomeConfig = quadrantConfigurations.get(i).getMonomeConfiguration(j);
 				if (monomeConfig.pages != null) {
 					for (int k = 0; k < monomeConfig.pages.size(); k++) {
-						monomeConfig.pages.get(k).handleTick();
+						monomeConfig.pages.get(k).handleTick(device);
 					}
+				}
+				if (monomeConfig.patternBanks.size() > i) {
+					ArrayList<Press> presses = monomeConfig.patternBanks.get(i).getRecordedPresses();
+					if (presses != null) {
+						for (int k=0; k < presses.size(); k++) {
+							int[] press = presses.get(k).getPress();
+							for (int pb = 0; pb < monomeConfig.pressesInPlayback.size(); pb++) {
+								if (monomeConfig.pressesInPlayback.get(pb) == null) continue;
+								int[] pbPress = monomeConfig.pressesInPlayback.get(pb).getPress();
+								if (press[0] == pbPress[0] && press[1] == pbPress[1] && press[2] == 0) {
+									monomeConfig.pressesInPlayback.remove(pb);
+								}
+							}
+							if (press[2] == 1) {
+								monomeConfig.pressesInPlayback.add(presses.get(k));
+							}
+							monomeConfig.pages.get(i).handleRecordedPress(press[0], press[1], press[2], presses.get(k).getPatternNum());
+						}
+					}
+	                monomeConfig.patternBanks.get(i).handleTick();
 				}
 			}
 		}

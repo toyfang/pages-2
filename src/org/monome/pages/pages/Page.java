@@ -2,6 +2,7 @@ package org.monome.pages.pages;
 
 import java.awt.Dimension;
 
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JPanel;
 
@@ -47,8 +48,9 @@ public interface Page extends BasePage {
 
     /**
 	 * Called whenever a MIDI clock tick message is received from the selected MIDI input deviec.
+     * @param device 
 	 */
-	public void handleTick();
+	public void handleTick(MidiDevice device);
 
     /**
 	 * Called whenever a MIDI message is received from the MIDI input device

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JPanel;
 
@@ -154,9 +155,9 @@ public class AbletonClipSkipperPage implements Page, Serializable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.monome.pages.Page#handleTick()
+	 * @see org.monome.pages.Page#handleTick(MidiDevice device)
 	 */
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 		for (int y = 0; y < this.monome.sizeY; y++) {
 			AbletonTrack track = Main.main.configuration.abletonState.getTrack(y);
 			if (track != null) {

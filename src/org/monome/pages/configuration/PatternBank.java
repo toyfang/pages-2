@@ -17,7 +17,7 @@ public class PatternBank implements Serializable {
 	public static final int PATTERN_STATE_TRIGGERED = 2;
 	public int numPatterns;
 	public int[] patternLengths;
-	private int quantify = 6;
+	public int quantify = 6;
 	public int curPattern = 0;
 	private ArrayList<Press> ignore = new ArrayList<Press>();
 	Page page;

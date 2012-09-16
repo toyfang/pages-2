@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.swing.JPanel;
@@ -224,7 +225,7 @@ public class MIDIFadersPage implements Page, Serializable {
 	/* (non-Javadoc)
 	 * @see org.monome.pages.Page#handleTick()
 	 */
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 
 	}
 

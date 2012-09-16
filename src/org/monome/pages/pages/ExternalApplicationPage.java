@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import javax.jmdns.ServiceInfo;
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -250,9 +251,9 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 	}
 
 	/* (non-Javadoc)
-	 * @see org.monome.pages.Page#handleTick()
+	 * @see org.monome.pages.Page#handleTick(MidiDevice device)
 	 */
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 		return;
 	}
 

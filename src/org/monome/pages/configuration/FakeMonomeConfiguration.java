@@ -50,6 +50,7 @@ public class FakeMonomeConfiguration extends MonomeConfiguration {
 			for (int numArgs = 0; numArgs < (quad[1] - quad[0]) / 8; numArgs++) {
 				intArgs.add(state * 255);
 			}
+			
 			this.led_row(intArgs, index);
 		}
 	}
@@ -95,11 +96,21 @@ public class FakeMonomeConfiguration extends MonomeConfiguration {
 
 	public synchronized void led_col(ArrayList<Integer> intArgs, int index) {
 		int[] quad = quadConf.getQuad(quadNum);
+		// how many quads to shift down
+		// startY / 8
 		int shifts = quad[2] / 8;
+		
+		// number of arguments we want to use for col message
+		// endY - startY / 8
 		int numArgs = ((quad[3] - quad[2]) / 8);
 		ArrayList<Integer> newIntArgs = new ArrayList<Integer>();
+		
 		int col = intArgs.get(0);
+		// offset x coordinate of column number
+		// col + startX
 		newIntArgs.add(col + quad[0]);
+		
+		// shift col message down by inserting arguments with existing led state
 		for (int i = 0; i < shifts; i++) {
 			int colState = 0;
 			for (int y = 0; y < 8; y++) {
@@ -107,14 +118,19 @@ public class FakeMonomeConfiguration extends MonomeConfiguration {
 			}
 			newIntArgs.add(new Integer(colState));
 		}
+
+		// add on existing column message
 		for (int i = 1; i < numArgs + 1; i++) {
 			newIntArgs.add(intArgs.get(i));
 		}
+		
+		// add existing state after column message
+		// sizeY - endY
 		int addOns = (parent.sizeY - quad[3]) / 8;
 		for (int i = 0; i < addOns; i++) {
 			int colState = 0;
 			for (int y = quad[3]; y < parent.sizeY; y++) {
-				colState += (parent.pageState[pageIndex][y][col + quad[0]] << (y - quad[3]));
+				colState += (parent.pageState[pageIndex][col + quad[0]][y] << (y - quad[3]));
 			}
 			newIntArgs.add(new Integer(colState));
 		}
@@ -154,6 +170,9 @@ public class FakeMonomeConfiguration extends MonomeConfiguration {
 	}
 
 	public synchronized void led(int x, int y, int value, int index) {
+		if (x >= sizeX || y >= sizeY || x < 0 || y < 0) {
+			return;
+		}
 		int[] quad = quadConf.getQuad(quadNum);
 		x += quad[0];
 		y += quad[2];
@@ -190,7 +209,27 @@ public class FakeMonomeConfiguration extends MonomeConfiguration {
 	}
 
 	public synchronized void tick(MidiDevice device) {
-		super.tick(device);
+		for (int i=0; i < this.numPages; i++) {
+			ArrayList<Press> presses = patternBanks.get(i).getRecordedPresses();
+			if (presses != null) {
+				for (int k=0; k < presses.size(); k++) {
+					int[] press = presses.get(k).getPress();
+					for (int pb = 0; pb < this.pressesInPlayback.size(); pb++) {
+						if (pressesInPlayback.get(pb) == null) continue;
+						int[] pbPress = pressesInPlayback.get(pb).getPress();
+						if (press[0] == pbPress[0] && press[1] == pbPress[1] && press[2] == 0) {
+							pressesInPlayback.remove(pb);
+						}
+					}
+					if (press[2] == 1) {
+						pressesInPlayback.add(presses.get(k));
+					}
+					this.pages.get(i).handleRecordedPress(press[0], press[1], press[2], presses.get(k).getPatternNum());
+				}
+			}
+            this.patternBanks.get(i).handleTick();
+			this.pages.get(i).handleTick(device);
+		}
 	}
 
 	public void toggleMidiInDevice(String deviceName) {

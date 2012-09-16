@@ -7,6 +7,7 @@ import java.io.StringWriter;
 
 import groovy.lang.GroovyClassLoader;
 
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.ShortMessage;
 import javax.swing.JPanel;
@@ -114,7 +115,7 @@ public class GroovyPage implements Page, Serializable {
 		}
 	}
 
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 		if (theApp != null) {
 			try {
 				theApp.clock();

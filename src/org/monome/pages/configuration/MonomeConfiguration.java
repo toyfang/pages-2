@@ -129,7 +129,7 @@ public class MonomeConfiguration extends OSCDeviceConfiguration<Page> {
 
     private MonomeFrame monomeFrame;
     
-    ArrayList<Press> pressesInPlayback = new ArrayList<Press>();
+    public ArrayList<Press> pressesInPlayback = new ArrayList<Press>();
 
     /**
 	 * @param index the index to assign to this MonomeConfiguration
@@ -405,7 +405,7 @@ public class MonomeConfiguration extends OSCDeviceConfiguration<Page> {
 						}
 					}
                     this.patternBanks.get(i).handleTick();
-					this.pages.get(i).handleTick();
+					this.pages.get(i).handleTick(device);
 				}
 			}
 		}

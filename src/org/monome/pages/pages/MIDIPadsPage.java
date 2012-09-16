@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.Serializable;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.ShortMessage;
 import javax.swing.JPanel;
@@ -210,7 +211,7 @@ public class MIDIPadsPage implements Page, Serializable {
 
 	}
 
-	public void handleTick() {
+	public void handleTick(MidiDevice device) {
 		// TODO Auto-generated method stub
 
 	}
