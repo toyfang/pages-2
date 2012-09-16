@@ -68,7 +68,7 @@ public class Main {
         if (args.length > 0) {
             file = new File(args[0]);
         }
-        logger.error("Pages 0.2a42 starting up\n");
+        logger.error("Pages 0.2a44 starting up\n");
         main = new Main(file);
     }
     
