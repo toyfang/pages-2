@@ -1126,23 +1126,6 @@ public class MonomeConfiguration extends OSCDeviceConfiguration<Page> {
         new Thread(new InitMonomeAnimation(this)).start();
     }
 
-	public void tilt(int n, int x, int y, int z) {
-		Object[] args = new Object[4];
-		args[0] = new Integer(n);
-		args[1] = new Integer(x);
-		args[2] = new Integer(y);
-		args[3] = new Integer(z);
-		OSCMessage msg = new OSCMessage(this.prefix + "/tilt", args);
-		if (serialOSCPortOut != null) {
-			try {
-				serialOSCPortOut.send(msg);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-	}
-
 	public void handleTilt(int n, int x, int y, int z) {
 		if (this.pages.get(curPage) != null) {
 			this.pages.get(curPage).handleTilt(n, x, y, z);

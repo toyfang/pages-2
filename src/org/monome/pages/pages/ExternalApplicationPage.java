@@ -123,7 +123,6 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 			for (int i = 0; i < keysArray.length; i++) {
 				String prefix = (String) keysArray[i];
 				this.oscIn.removeListener(prefix + "/led");
-				this.oscIn.removeListener(prefix + "/tilt");
 				this.oscIn.removeListener(prefix + "/led_col");
 				this.oscIn.removeListener(prefix + "/led_row");
 				this.oscIn.removeListener(prefix + "/clear");
@@ -200,7 +199,6 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 		this.oscIn.addListener(this.prefix + "/grid/led/row", this);
 		this.oscIn.addListener(this.prefix + "/grid/led/col", this);
 		this.oscIn.addListener(this.prefix + "/grid/led/all", this);
-		this.oscIn.addListener(this.prefix + "/tilt", this);
 		
 		listenersAdded.put(this.prefix + " " + index, 1);
 	}
@@ -592,7 +590,21 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
     }
 
 	public void handleTilt(int n, int x, int y, int z) {
-		this.monome.tilt(n, x, y, z);
+		// pass all tilt messages along to the external application
+		if (this.oscOut == null) {
+			return;
+		}
+		Object args[] = new Object[4];
+		args[0] = new Integer(n);
+		args[1] = new Integer(x);
+		args[2] = new Integer(y);
+		args[3] = new Integer(z);
+		OSCMessage msg = new OSCMessage(this.prefix + "/tilt", args);
+		try {
+			this.oscOut.send(msg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
