@@ -55,6 +55,15 @@ public class MonomeOSCListener implements OSCListener {
 				monome.handlePress(x, y, value);
 			}
 		}
+		if (message.getAddress().contains("tilt")) {
+			if (args.length == 4) {
+				int n = ((Integer) args[0]).intValue();
+				int x = ((Integer) args[1]).intValue();
+				int y = ((Integer) args[2]).intValue();
+				int z = ((Integer) args[3]).intValue();
+				monome.handleTilt(n, x, y, z);
+			}
+		}
 		/*
 		if (message.getAddress().contains("adc")) { 
 			int adcNum = ((Integer) args[0]).intValue();

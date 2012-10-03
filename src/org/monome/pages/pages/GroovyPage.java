@@ -263,6 +263,9 @@ public class GroovyPage implements Page, Serializable {
 				"    void clockReset() {\n" +
 				"        clockResetOut()\n" +
 				"    }\n" +
+				"\n" +
+				"    void tilt(int n, int x, int y, int z) {\n" +
+				"    }\n" +
 				"}"
 				);
 		gui.codePane.scrollTo(0, 0);
@@ -341,4 +344,18 @@ public class GroovyPage implements Page, Serializable {
             }
         }
     }
+
+	public void handleTilt(int n, int x, int y, int z) {
+		if (theApp != null) {
+			try {
+				theApp.tilt(n, x, y, z);
+			} catch (Exception e) {
+                StringWriter sw = new StringWriter();
+                final PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                errorLog.addError(sw.toString());
+			}
+		}
+		
+	}
 }

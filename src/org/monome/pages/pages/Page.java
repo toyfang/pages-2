@@ -24,6 +24,7 @@ public interface Page extends BasePage {
 	 * @param value The type of event (1 = button press, 0 = button release)
 	 */
 	public void handlePress(int x, int y, int value);
+	public void handleTilt(int n, int x, int y, int z);
 	
 	/**
 	 * Called when the 40h sends tilt/adc data

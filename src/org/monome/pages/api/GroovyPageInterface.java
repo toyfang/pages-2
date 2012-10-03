@@ -24,4 +24,5 @@ public interface GroovyPageInterface {
     public void handleAbletonEvent();
     public void setLogger(GroovyErrorLog errorLog);
     public void sendCommand(Command command);
+	public void tilt(int n, int x, int y, int z);
 }

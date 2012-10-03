@@ -348,4 +348,9 @@ public class QuadrantsPage implements Page, Serializable {
         handlePress(x, y, val);
     }
 
+	public void handleTilt(int n, int x, int y, int z) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

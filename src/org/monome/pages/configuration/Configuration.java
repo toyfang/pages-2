@@ -311,6 +311,7 @@ public class Configuration implements Serializable {
 					MonomeOSCListener oscListener = new MonomeOSCListener(monomeConfig);
 					monomeConfig.oscListener = oscListener;
 					this.monomeSerialOSCPortIn.addListener(monomeConfig.prefix + "/press", oscListener);
+					this.monomeSerialOSCPortIn.addListener(monomeConfig.prefix + "/tilt", oscListener);
 		            System.out.println("Added listener for " + monomeConfig.prefix + "/press on port " + this.monomeSerialOSCInPortNumber);
 					/*
 					this.monomeSerialOSCPortIn.addListener(monomeConfig.prefix + "/adc", oscListener);
@@ -457,6 +458,7 @@ public class Configuration implements Serializable {
 		MonomeOSCListener oscListener = new MonomeOSCListener(monome);
 		this.serialOSCPortIn = OSCPortFactory.getInstance().getOSCPortIn(oscListenPort);
 		this.serialOSCPortIn.addListener(monome.prefix + "/grid/key", oscListener);
+		this.serialOSCPortIn.addListener(monome.prefix + "/tilt", oscListener);
 		
 		try {
 	        OSCMessage portMsg = new OSCMessage();
@@ -466,6 +468,27 @@ public class Configuration implements Serializable {
 			portMsg = new OSCMessage();
             portMsg.setAddress("/sys/host");
             portMsg.addArgument("127.0.0.1");
+            monome.serialOSCPortOut.send(portMsg);
+            // enable tilt sensors
+			portMsg = new OSCMessage();
+            portMsg.setAddress(monome.prefix + "/tilt/set");
+            portMsg.addArgument(0);
+            portMsg.addArgument(1);
+            monome.serialOSCPortOut.send(portMsg);
+			portMsg = new OSCMessage();
+            portMsg.setAddress(monome.prefix + "/tilt/set");
+            portMsg.addArgument(1);
+            portMsg.addArgument(1);
+            monome.serialOSCPortOut.send(portMsg);
+			portMsg = new OSCMessage();
+            portMsg.setAddress(monome.prefix + "/tilt/set");
+            portMsg.addArgument(2);
+            portMsg.addArgument(1);
+            monome.serialOSCPortOut.send(portMsg);
+			portMsg = new OSCMessage();
+            portMsg.setAddress(monome.prefix + "/tilt/set");
+            portMsg.addArgument(3);
+            portMsg.addArgument(1);
             monome.serialOSCPortOut.send(portMsg);
 
 		} catch (IOException e) {

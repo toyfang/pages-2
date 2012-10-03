@@ -36,4 +36,7 @@ class GroovyTemplatePage extends GroovyAPI {
     void clockReset() {
         clockResetOut()
     }
+    
+    void tilt(int n, int x, int y, int z) {
+    }
 }

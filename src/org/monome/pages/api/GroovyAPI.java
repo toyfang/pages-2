@@ -289,4 +289,7 @@ public class GroovyAPI implements GroovyPageInterface {
     public void recordedPress(int x, int y, int val, int pattNum) {
         press(x, y, val);
     }
+
+	public void tilt(int n, int x, int y, int z) {
+	}
 }
