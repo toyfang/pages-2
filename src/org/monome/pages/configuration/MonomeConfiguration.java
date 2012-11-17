@@ -659,7 +659,7 @@ public class MonomeConfiguration extends OSCDeviceConfiguration<Page> {
 				}
 			} else {
 				msg = new OSCMessage(this.prefix + "/grid/led/set", args);
-				serialOSCPortOut.send(msg);
+				if (serialOSCPortOut != null) serialOSCPortOut.send(msg);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
