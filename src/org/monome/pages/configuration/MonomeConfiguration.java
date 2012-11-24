@@ -1127,8 +1127,9 @@ public class MonomeConfiguration extends OSCDeviceConfiguration<Page> {
     }
 
 	public void handleTilt(int n, int x, int y, int z) {
-		if (this.pages.get(curPage) != null) {
-			this.pages.get(curPage).handleTilt(n, x, y, z);
-		}
+		if (curPage < 0) return;
+		if (this.pages.size() <= curPage) return;
+		if (this.pages.get(curPage) == null) return;
+		this.pages.get(curPage).handleTilt(n, x, y, z);
 	}
 }
