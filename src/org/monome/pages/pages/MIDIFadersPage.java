@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.ShortMessage;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.swing.JPanel;
@@ -268,6 +269,16 @@ public class MIDIFadersPage implements Page, Serializable {
 		if (msg.length != 3) {
 			return;
 		}
+		if (message instanceof ShortMessage) {
+			if (((ShortMessage) message).getCommand() != ShortMessage.CONTROL_CHANGE) {
+				return;
+			}
+			if (((ShortMessage) message).getChannel() != this.midiChannel) {
+				return;
+			}
+		} else {
+			return;
+		}
 		if (msg.length == 3) {
 			cc = msg[1];
 			val = msg[2];
@@ -287,7 +298,7 @@ public class MIDIFadersPage implements Page, Serializable {
 			}
 			int endX = 0;
 			for (int x = 0; x < this.monome.sizeX; x++) {
-				if (this.monome.sizeY == 8) {
+				if ((!horizontal && this.monome.sizeY == 8) || (horizontal && this.monome.sizeX == 8)) {
 					if (val <= this.buttonValuesSmall[x]) {
 						endX = x;
 					}
