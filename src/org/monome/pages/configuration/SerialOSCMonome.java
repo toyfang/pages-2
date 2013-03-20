@@ -60,6 +60,16 @@ public class SerialOSCMonome implements SerialOSCDevice, OSCListener {
 					try {
 						OSCPortOut outPort = OSCPortFactory.getInstance().getOSCPortOut(hostName, port);
 						outPort.send(prefixMsg);
+						OSCMessage tiltMsg = new OSCMessage();
+						tiltMsg.setAddress("/" + serial + "/tilt");
+						tiltMsg.addArgument(new Integer(0));
+						tiltMsg.addArgument(new Integer(1));
+						outPort.send(tiltMsg);
+						tiltMsg = new OSCMessage();
+						tiltMsg.setAddress("/" + serial + "/tilt");
+						tiltMsg.addArgument(new Integer(1));
+						tiltMsg.addArgument(new Integer(1));
+						outPort.send(tiltMsg);
 						if ((x == 8 && y == 16) || (x == 16 && y == 8)) {
 							OSCMessage rotationMsg = new OSCMessage("/sys/rotation");
 							rotationMsg.addArgument(new Integer(0));
@@ -81,6 +91,16 @@ public class SerialOSCMonome implements SerialOSCDevice, OSCListener {
 				try {
 					OSCPortOut outPort = OSCPortFactory.getInstance().getOSCPortOut(hostName, port);
 					outPort.send(prefixMsg);
+					OSCMessage tiltMsg = new OSCMessage();
+					tiltMsg.setAddress("/" + serial + "/tilt");
+					tiltMsg.addArgument(new Integer(0));
+					tiltMsg.addArgument(new Integer(1));
+					outPort.send(tiltMsg);
+					tiltMsg = new OSCMessage();
+					tiltMsg.setAddress("/" + serial + "/tilt");
+					tiltMsg.addArgument(new Integer(1));
+					tiltMsg.addArgument(new Integer(1));
+					outPort.send(tiltMsg);
 					if ((x == 8 && y == 16) || (x == 16 && y == 8)) {
 						OSCMessage rotationMsg = new OSCMessage("/sys/rotation");
 						rotationMsg.addArgument(new Integer(0));
