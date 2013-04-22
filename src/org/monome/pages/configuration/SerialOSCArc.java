@@ -59,7 +59,7 @@ public class SerialOSCArc implements SerialOSCDevice, OSCListener {
             Main.main.configuration.initAbleton();
             config = Main.main.configuration;
         }
-        config.addArcConfigurationSerialOSC(ArcConfigurationFactory.getNumArcConfigurations(), "/" + serial, serial, knobs, port, hostName);
+        config.addArcConfigurationSerialOSC(ArcConfigurationFactory.getNumArcConfigurations(), "/" + serial, serial, knobs, port, hostName, false);
     }
 
     public int getPort() {
@@ -106,7 +106,7 @@ public class SerialOSCArc implements SerialOSCDevice, OSCListener {
         if (message.getAddress().compareToIgnoreCase("/sys/port") == 0) {
             ArcConfiguration arcConfig = ArcConfigurationFactory.getArcConfiguration("/" + serial);
             if (arcConfig == null) {
-                arcConfig = Main.main.configuration.addArcConfigurationSerialOSC(ArcConfigurationFactory.getNumArcConfigurations(), "/" + serial, serial, knobs, port, hostName);
+                arcConfig = Main.main.configuration.addArcConfigurationSerialOSC(ArcConfigurationFactory.getNumArcConfigurations(), "/" + serial, serial, knobs, port, hostName, false);
             }
             if (arcConfig.serialOSCPort == 0) {
                 arcConfig.serialOSCPort = port;

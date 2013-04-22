@@ -63,9 +63,16 @@ The IAC driver comes standard with OS X and will work fine for OS X users. A tut
 LiveOSC Setup
 =============
 
-Identify which version of Ableton Live you have and find the appropriate script folder for your version / OS.  Live 7 on OSX is currently unsupported in the later versions of pages (but it might work, hasn't been tested thoroughly), use an earlier version of pages  if you have this configuration.
+The LiveOSC folder contains two subfolders: LiveOSC-Windows and LiveOSC-OSX.  Choose the appropriate one for your OS and go inside the folder.
 
-Each folder in the zip file contains a LiveOSC sub-folder.  Once you've identified the version you need, copy the LiveOSC folder to your Ableton Live Remote MIDI Scripts folder.  If you're on Windows, this can be found in C:\Program Files\Ableton X.Y.Z\Resources\MIDI Remote Scripts.  For OSX, right click on the Live.app file and choose 'Show Package Contents', then navigate to App-Resources/MIDI Remote Scripts and copy the folder there.
+If on Windows:
+1. Copy the LiveOSC-Windows/LiveOSC folder to your Ableton folder under the MIDI Remote Scripts folder.  Your final directory path should be like this: MIDI Remote Scripts/LiveOSC/LiveOSC.py
+
+If on OSX:
+1. Open Finder and go to Applications.
+2. Control-click on Ableton and pick 'Show Package Contents'.
+3. Go to App-Resources/MIDI Remote Scripts.
+4. Open a second finder window and copy the LiveOSC folder inside LiveOSC-OSX to MIDI Remote Scripts.  Your final directory path should be like this: MIDI Remote Scripts/LiveOSC/LiveOSC.py
 
 Open Ableton Live and go to preferences.  Select MIDI preferences and click on an empty Control Surface dropdown.  Select LiveOSC in the dropdown.  LiveOSC is now setup and ready to use.
 

@@ -251,7 +251,7 @@ public class Configuration implements Serializable {
 		return monome;
 	}
 	
-    public ArcConfiguration addArcConfiguration(int index, String prefix, String serial, int knobs, ArrayList<MIDIPageChangeRule> midiPageChangeRules) {
+    public ArcConfiguration addArcConfiguration(int index, String prefix, String serial, int knobs, boolean useMIDIPageChanging, ArrayList<MIDIPageChangeRule> midiPageChangeRules) {
         ArcFrame arcFrame = new ArcFrame(index);
         try {
             arcFrame.setSelected(true);
@@ -260,12 +260,12 @@ public class Configuration implements Serializable {
         }
         MainGUI.getDesktopPane().add(arcFrame);
         arcFrame.moveToFront();
-        ArcConfiguration arc = ArcConfigurationFactory.addArcConfiguration(index, prefix, serial, knobs, arcFrame, midiPageChangeRules);
+        ArcConfiguration arc = ArcConfigurationFactory.addArcConfiguration(index, prefix, serial, knobs, arcFrame, useMIDIPageChanging, midiPageChangeRules);
         this.initArcSerialOSC(arc);
         return arc;
     }
 
-    public ArcConfiguration addArcConfigurationSerialOSC(int index, String prefix, String serial, int knobs, int port, String hostName) {
+    public ArcConfiguration addArcConfigurationSerialOSC(int index, String prefix, String serial, int knobs, int port, String hostName, boolean useMIDIPageChanging) {
         ArcFrame arcFrame = new ArcFrame(index);
         try {
             arcFrame.setSelected(true);
@@ -275,7 +275,7 @@ public class Configuration implements Serializable {
         MainGUI.getDesktopPane().add(arcFrame);
         arcFrame.moveToFront();
         ArrayList<MIDIPageChangeRule> midiPageChangeRules = new ArrayList<MIDIPageChangeRule>();
-        ArcConfiguration arc = ArcConfigurationFactory.addArcConfiguration(index, prefix, serial, knobs, arcFrame, midiPageChangeRules);
+        ArcConfiguration arc = ArcConfigurationFactory.addArcConfiguration(index, prefix, serial, knobs, arcFrame, useMIDIPageChanging, midiPageChangeRules);
         arc.serialOSCPort = port;
         arc.serialOSCHostname = hostName;
         this.initArcSerialOSC(arc);
@@ -1390,7 +1390,7 @@ public class Configuration implements Serializable {
 
 					
 					// create the new arc configuration and display its window
-					ArcConfiguration arcConfig = addArcConfiguration(i, prefix, serial, Integer.parseInt(knobs), midiPageChangeRules);
+					ArcConfiguration arcConfig = addArcConfiguration(i, prefix, serial, Integer.parseInt(knobs), boolUseMIDIPageChanging, midiPageChangeRules);
 					arcConfig.serialOSCHostname = serialOSCHostName;
 					arcConfig.deviceFrame.updateMidiInMenuOptions(MidiDeviceFactory.getMidiInOptions());
 					arcConfig.deviceFrame.updateMidiOutMenuOptions(MidiDeviceFactory.getMidiOutOptions());
