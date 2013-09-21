@@ -134,7 +134,7 @@ public class AbletonClipLauncherPage implements Page, Serializable {
 						this.abletonOverdub(1);
 					}					
 				} else if (y == 7) {
-					this.abletonUndo();
+//					this.abletonUndo();
 				}
 			} else {
 				// if this is the bottom row then arm/disarm track number x

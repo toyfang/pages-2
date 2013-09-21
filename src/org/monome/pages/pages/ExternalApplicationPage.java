@@ -116,8 +116,20 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 	 */
 	public void stopOSC() {
 		if (this.oscIn != null) {
+			removeListeners();
+			OSCPortFactory.getInstance().destroyOSCPortIn(this.inPort);
+			this.oscIn = null;
+		}
+		
+	}
+	
+	public void removeListeners() {
+		if (this.oscIn != null) {
 			this.oscIn.removeListener("/sys/prefix");
 			this.oscIn.removeListener("/sys/info");
+			this.oscIn.removeListener("/sys/port");
+			this.oscIn.removeListener("/sys/host");
+			this.oscIn.removeListener("/sys/rotation");
 			Set<String> keys = listenersAdded.keySet();
 			Object[] keysArray = keys.toArray();
 			for (int i = 0; i < keysArray.length; i++) {
@@ -135,13 +147,10 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 				this.oscIn.removeListener("/grid/led/row");
 				this.oscIn.removeListener("/grid/led/col");
 				this.oscIn.removeListener("/grid/led/all");
-
+				this.oscIn.removeListener("/grid/led/map");
 				listenersAdded.remove(prefix);
 			}
-			OSCPortFactory.getInstance().destroyOSCPortIn(this.inPort);
-			this.oscIn = null;
-		}
-		
+		}		
 	}
 
 	/**
@@ -156,7 +165,7 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 				this.oscIn = null;
 				return;
 			}
-			
+			removeListeners();
 			addListeners();
 			if (Main.main.zeroconfLibrary == Main.LIBRARY_APPLE) {			
     			try {
@@ -186,19 +195,22 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 			return;
 		}
 		this.oscIn.addListener("/sys/prefix", this);
+		this.oscIn.addListener("/sys/port", this);
+		this.oscIn.addListener("/sys/host", this);
+		this.oscIn.addListener("/sys/info", this);
+		this.oscIn.addListener("/sys/rotation", this);
 		this.oscIn.addListener(this.prefix + "/led", this);
 		this.oscIn.addListener(this.prefix + "/led_col", this);
 		this.oscIn.addListener(this.prefix + "/led_row", this);
 		this.oscIn.addListener(this.prefix + "/clear", this);
 		this.oscIn.addListener(this.prefix + "/frame", this);
 		this.oscIn.addListener(this.prefix + "/frame", this);
-		this.oscIn.addListener("/sys/port", this);
-		this.oscIn.addListener("/sys/info", this);
 		
 		this.oscIn.addListener(this.prefix + "/grid/led/set", this);
 		this.oscIn.addListener(this.prefix + "/grid/led/row", this);
 		this.oscIn.addListener(this.prefix + "/grid/led/col", this);
 		this.oscIn.addListener(this.prefix + "/grid/led/all", this);
+		this.oscIn.addListener(this.prefix + "/grid/led/map", this);
 		
 		listenersAdded.put(this.prefix + " " + index, 1);
 	}
@@ -313,6 +325,7 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 		Object[] args = msg.getArguments();
 		if (msg.getAddress().compareTo("/sys/info") == 0) {
 			try {
+				Thread.sleep(100);
 				OSCMessage outmsg = new OSCMessage();
 				outmsg.setAddress("/sys/port");
 				outmsg.addArgument(outPort);
@@ -323,14 +336,25 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 				oscOut.send(outmsg);
 				outmsg = new OSCMessage();
 				outmsg.setAddress("/sys/id");
-				outmsg.addArgument("extpp");
+				outmsg.addArgument("m40h0800");
 				oscOut.send(outmsg);
 				outmsg = new OSCMessage();
 				outmsg.setAddress("/sys/size");
 				outmsg.addArgument(monome.sizeX);
 				outmsg.addArgument(monome.sizeY);
 				oscOut.send(outmsg);
+				outmsg = new OSCMessage();
+				outmsg.setAddress("/sys/host");
+				outmsg.addArgument(this.hostname);
+				oscOut.send(outmsg);
+				outmsg = new OSCMessage();
+				outmsg.setAddress("/sys/rotation");
+				outmsg.addArgument(0);
+				oscOut.send(outmsg);
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -340,28 +364,81 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
             if (gui.getIgnorePrefixCB().isSelected()) {
                 return;
             }
-			int port = ((Integer) args[0]).intValue();
-			setOutPort("" + port);
-			this.oscOut = OSCPortFactory.getInstance().getOSCPortOut(this.hostname, Integer.valueOf(this.outPort));
+            
+            if (args.length > 0) {
+				if (!gui.getIgnorePrefixCB().isSelected()) {
+					int port = ((Integer) args[0]).intValue();
+	    			setOutPort("" + port);
+	    			this.oscOut = OSCPortFactory.getInstance().getOSCPortOut(this.hostname, Integer.valueOf(this.outPort));
+				}
+            }
+			
+			OSCMessage outmsg = new OSCMessage();
+			outmsg.setAddress("/sys/port");
+			outmsg.addArgument(this.outPort);
+			try {
+				oscOut.send(outmsg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (msg.getAddress().compareTo("/sys/host") == 0) {
+            if (gui.getIgnorePrefixCB().isSelected()) {
+                return;
+            }
+            if (args.length > 0) {
+				if (!gui.getIgnorePrefixCB().isSelected()) {
+		            this.hostname = (String) args[0];
+					setHostname(this.hostname);
+					this.oscOut = OSCPortFactory.getInstance().getOSCPortOut(this.hostname, Integer.valueOf(this.outPort));
+				}
+            }
+			OSCMessage outmsg = new OSCMessage();
+			outmsg.setAddress("/sys/host");
+			outmsg.addArgument(this.hostname);
+			try {
+				oscOut.send(outmsg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		if (msg.getAddress().compareTo("/sys/prefix") == 0) {
-			if (gui.getIgnorePrefixCB().isSelected()) {
-				return;
-			}
 			if (args.length > 0 && args[0] instanceof String) {
-				this.setPrefix((String) args[0]);
-			} else {
-				OSCMessage outmsg = new OSCMessage();
-				outmsg.setAddress("/sys/prefix");
-				outmsg.addArgument(this.prefix);
-				try {
-					oscOut.send(outmsg);
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (!gui.getIgnorePrefixCB().isSelected()) {
+					String pfx = (String) args[0];
+					if (pfx.charAt(0) != '/') {
+						pfx = '/' + pfx;
+					}
+					this.setPrefix(pfx);
 				}
 			}
+			OSCMessage outmsg = new OSCMessage();
+			outmsg.setAddress("/sys/prefix");
+			outmsg.addArgument(this.prefix);
+			try {
+				oscOut.send(outmsg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			removeListeners();
 			addListeners();
+		}
+
+		if (msg.getAddress().compareTo("/sys/rotation") == 0) {
+//			OSCMessage outmsg = new OSCMessage();
+//			outmsg.setAddress("/sys/rotation");
+//			int out = 0;
+//			if (args.length > 0) {
+//				out = ((Integer) args[0]).intValue();
+//			}
+//			outmsg.addArgument(out);
+//			try {
+//				oscOut.send(outmsg);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 		}
 		
 		// only process messages from the external application
@@ -383,7 +460,7 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 		}
 
 		// handle a monome led_col request from the external application
-		if (msg.getAddress().contains("led_col")) {
+		else if (msg.getAddress().contains("led_col")) {
 			ArrayList<Integer> intArgs = new ArrayList<Integer>();
 			for (int i=0; i < args.length; i++) {
 				if ((i - 1) * 8 >= monome.sizeY) {
@@ -399,7 +476,7 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 			this.monome.led_col(intArgs, this.index);
 		}
 		
-		if (msg.getAddress().contains("/grid/led/col")) {
+		else if (msg.getAddress().contains("/grid/led/col")) {
 			ArrayList<Integer> intArgs = new ArrayList<Integer>();
 			for (int i=0; i < args.length; i++) {
 				if ((i - 2) * 8 >= monome.sizeY) {
@@ -419,7 +496,7 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 		}
 
 		// handle a monome led_row request from the external application
-		if (msg.getAddress().contains("led_row")) {
+		else if (msg.getAddress().contains("led_row")) {
 			ArrayList<Integer> intArgs = new ArrayList<Integer>();
 			for (int i=0; i < args.length; i++) {
 				if ((i - 1) * 8 >= monome.sizeX) {
@@ -435,7 +512,7 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 			this.monome.led_row(intArgs, this.index);
 		}
 		
-		if (msg.getAddress().contains("/grid/led/row")) {
+		else if (msg.getAddress().contains("/grid/led/row")) {
 			ArrayList<Integer> intArgs = new ArrayList<Integer>();
 			for (int i=1; i < args.length; i++) {
 				if ((i - 2) * 8 >= monome.sizeX) {
@@ -451,6 +528,50 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 			this.monome.led_row(intArgs, this.index);
 		}
 		
+		else if (msg.getAddress().contains("/grid/led/map")) {
+			if (args.length != 10) {
+				return;
+			}
+			int xOffset, yOffset;
+			ArrayList<Integer> intArgs;
+			
+			if (args[0] instanceof Integer) {
+				xOffset = (Integer) args[0];
+			} else if (args[0] instanceof Float) {
+				xOffset = ((Float) args[0]).intValue(); 
+			} else {
+				return;
+			}
+			
+			if (args[1] instanceof Integer) {
+				yOffset = (Integer) args[1];
+			} else if (args[1] instanceof Float) {
+				yOffset = ((Float) args[1]).intValue(); 
+			} else {
+				return;
+			}
+			
+			for (int i = 2; i < args.length; i++) {
+				int rowNum = i - 2 + xOffset;
+				intArgs = new ArrayList<Integer>();
+				intArgs.add(rowNum);
+				int value = 0;
+				if (args[i] instanceof Integer) {
+					value = (Integer) args[i];
+				} else if (args[i] instanceof Float) {
+					value = ((Float) args[i]).intValue();
+				} else {
+					return;
+				}
+				for (int shift = 0; shift < yOffset / 8; shift++) {
+					intArgs.add(0);
+				}
+				intArgs.add(value);
+				this.monome.led_row(intArgs, this.index);
+			}
+		}
+		
+
 		// handle a monome led request from the external application
 		else if (msg.getAddress().contains("led") || msg.getAddress().contains("/grid/led/set")) {
 			int[] int_args = {0, 0, 0};
@@ -472,20 +593,7 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 			int_args[1] = int_args[1] % monome.sizeY;
 			this.monome.led(int_args[0], int_args[1], int_args[2], this.index);
 		}
-		
-		else if (msg.getAddress().contains("clear") || msg.getAddress().contains("/grid/led/all")) {
-			int[] int_args = {0};
-			for (int i=0; i < args.length; i++) {
-				if (args[i] instanceof Integer) {
-					int_args[i] = ((Integer) args[i]).intValue();
-				}
-				if (args[i] instanceof Float) {
-					int_args[i] = ((Float) args[i]).intValue();
-				}
-			}
-			this.monome.clear(int_args[0], this.index);
-		}
-		
+				
 	}
 
 	/**

@@ -143,8 +143,8 @@ public class AbletonSceneLauncherPage implements Page, Serializable {
 						this.abletonOverdub(1);
 					}					
 				} else if (y == 7) {
-					this.abletonUndo();
-					redrawDevice();
+//					this.abletonUndo();
+//					redrawDevice();
 				}
 			} else {
 				// left hand column scene operations
