@@ -532,43 +532,15 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 			if (args.length != 10) {
 				return;
 			}
-			int xOffset, yOffset;
-			ArrayList<Integer> intArgs;
-			
-			if (args[0] instanceof Integer) {
-				xOffset = (Integer) args[0];
-			} else if (args[0] instanceof Float) {
-				xOffset = ((Float) args[0]).intValue(); 
-			} else {
-				return;
-			}
-			
-			if (args[1] instanceof Integer) {
-				yOffset = (Integer) args[1];
-			} else if (args[1] instanceof Float) {
-				yOffset = ((Float) args[1]).intValue(); 
-			} else {
-				return;
-			}
-			
-			for (int i = 2; i < args.length; i++) {
-				int rowNum = i - 2 + xOffset;
-				intArgs = new ArrayList<Integer>();
-				intArgs.add(rowNum);
-				int value = 0;
+			ArrayList<Integer> intArgs = new ArrayList<Integer>();
+			for (int i = 0; i < 10; i++) {
 				if (args[i] instanceof Integer) {
-					value = (Integer) args[i];
+					intArgs.add((Integer) args[i]);
 				} else if (args[i] instanceof Float) {
-					value = ((Float) args[i]).intValue();
-				} else {
-					return;
+					intArgs.add(((Float) args[i]).intValue());
 				}
-				for (int shift = 0; shift < yOffset / 8; shift++) {
-					intArgs.add(0);
-				}
-				intArgs.add(value);
-				this.monome.led_row(intArgs, this.index);
 			}
+			this.monome.led_map(intArgs, this.index);
 		}
 		
 

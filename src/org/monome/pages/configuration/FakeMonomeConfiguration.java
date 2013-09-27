@@ -178,6 +178,10 @@ public class FakeMonomeConfiguration extends MonomeConfiguration {
 		y += quad[2];
 		parent.led(x, y, value, pageIndex);
 	}
+	
+	public synchronized void led_map(ArrayList<Integer> intArgs, int index) {
+		
+	}
 
 	public void redrawAbletonPages() {
 		super.redrawAbletonPages();

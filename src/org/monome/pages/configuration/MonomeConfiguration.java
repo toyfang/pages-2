@@ -755,6 +755,50 @@ public class MonomeConfiguration extends OSCDeviceConfiguration<Page> {
 			e.printStackTrace();
 		}
 	}
+	
+	public void led_map(ArrayList<Integer> intArgs, int index) {
+		int xOffset = intArgs.get(0);
+		int yOffset = intArgs.get(1);
+		for (int y = 0; y < 8; y++) {
+			int val = intArgs.get(y + 2);
+			for (int x = 0 ; x < 8; x++) {
+				this.pageState[index][x + xOffset][y + yOffset] = val & (1 << x);
+				if (index != this.curPage) {
+					continue;
+				}
+				this.ledState[x + xOffset][y + yOffset] = val & (1 << x);
+			}
+		}
+		if (index == this.curPage) {
+			if (this.deviceFrame != null) {
+				MonomeDisplayFrame monomeDisplayFrame = monomeFrame.getMonomeDisplayFrame();
+				if (monomeDisplayFrame != null) {
+					monomeDisplayFrame.setLedState(ledState);
+				}
+			}
+		}
+		if (index != this.curPage) {
+			return;
+		}
+		Object args[] = new Object[10];
+		args[0] = xOffset;
+		args[1] = yOffset;
+		for (int i = 2; i < 10; i++) {
+			args[i] = (Integer) intArgs.get(i);
+		}
+		OSCMessage msg;
+		try {
+			if (this.serialOSCPort == 0) {
+				return;
+			}
+			msg = new OSCMessage(this.prefix + "/grid/led/map", args);
+			if (serialOSCPortOut != null) {
+				serialOSCPortOut.send(msg);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Sends a led_row message to the monome if index is the selected page.
