@@ -238,6 +238,7 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 		if (this.oscOut == null) {
 			return;
 		}
+		// System.out.println("[extapp-" + this.inPort + "]: handlePress(" + x + ", " + y + ", " + value + ")");
 		Object args[] = new Object[3];
 		args[0] = new Integer(x);
 		args[1] = new Integer(y);
@@ -323,6 +324,11 @@ public class ExternalApplicationPage implements Page, OSCListener, RegisterListe
 	 */
 	public void acceptMessage(Date arg0, OSCMessage msg) {
 		Object[] args = msg.getArguments();
+		// System.out.print("[extapp-" + this.inPort + "]: received " + msg.getAddress() + " ");
+		// for (int i = 0; i < args.length; i++) {
+		// 	System.out.print(args[i] + " ");
+		// }
+		// System.out.println();
 		if (msg.getAddress().compareTo("/sys/info") == 0) {
 			try {
 				Thread.sleep(100);

@@ -121,7 +121,7 @@ public class ExternalApplicationGUI extends JPanel implements Serializable {
 	private JTextField getOscHostnameTF() {
 		if (oscHostnameTF == null) {
 			oscHostnameTF = new JTextField();
-			oscHostnameTF.setText("localhost.localdomain.");
+			oscHostnameTF.setText("localhost");
 			oscHostnameTF.setBounds(new Rectangle(125, 65, 76, 21));
 		}
 		return oscHostnameTF;

@@ -71,6 +71,9 @@ public class Pattern implements Serializable {
 		this.presses = new ArrayList<Press>();
 		for (int i = 0; i < MonomeConfigurationFactory.getNumMonomeConfigurations(); i++) {
 		    MonomeConfiguration monome = MonomeConfigurationFactory.getMonomeConfiguration(i);
+		    if (monome == null) {
+		    	continue;
+		    }
 		    for (int j = 0; j < monome.pressesInPlayback.size(); j++) {
 		        Press press = monome.pressesInPlayback.get(j);
 	            Page page = monome.pages.get(monome.curPage);
