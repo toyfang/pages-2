@@ -10,12 +10,17 @@ class MIDIChannelerPage extends GroovyAPI {
 
     void init() {
         log("MIDIChannelerPage starting up")
+        int length = 0;
         for (int x = 0; x < sizeX(); x++) {
             patterns().ignore(x, sizeY() - 1)
             notes[x] = []
             for (int y = 0; y < sizeY(); y++) {
                 notes[x][y] = 0
             }
+            if (x % 2 == 0) {
+                length += 2
+            }
+            patterns().patternLengths[x] = length * 96
         }
         if (overdubButton) {
             patterns().ignore(sizeX() - 1, sizeY() - 2)

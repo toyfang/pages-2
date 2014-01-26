@@ -143,8 +143,7 @@ public class AbletonSceneLauncherPage implements Page, Serializable {
 						this.abletonOverdub(1);
 					}					
 				} else if (y == 7) {
-//					this.abletonUndo();
-//					redrawDevice();
+					//page change btn, do nothing
 				}
 			} else {
 				// left hand column scene operations
@@ -155,6 +154,18 @@ public class AbletonSceneLauncherPage implements Page, Serializable {
 						this.launchScene(scene_num);
 					} else {
 						// prev scene
+						if (y == this.monome.sizeY - 3) {
+							int i = 0;
+							while(true) {
+								AbletonTrack track = Main.main.configuration.abletonState.getTrack(i);
+								if (track == null) {
+									break;
+								}
+								this.stopTrack(i);
+								i++;
+							}
+							redrawDevice();
+						}
 						if (y == this.monome.sizeY - 2 && Main.main.configuration.abletonState.getSelectedScene() >= 0) {
 							// this is wacky because the script starts counting scenes at 1, while
 							// pages starts at 0.  i couldn't get liveosc to send me a packet with
