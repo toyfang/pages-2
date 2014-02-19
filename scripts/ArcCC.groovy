@@ -106,4 +106,16 @@ class ArcCC extends GroovyAPI {
         tickNum = 0
         redrawDevice()
     }
+
+    void cc(int num, int val, int chan) {
+        if (chan != midiChannel) {
+            return;
+        }
+        for (int enc = 0; enc < 4; enc++) {
+            if (ccNum[enc] == num) {
+                cc[enc] = val;
+                ccDraw(enc);
+            }
+        }
+    }
 }
