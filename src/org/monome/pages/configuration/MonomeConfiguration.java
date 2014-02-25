@@ -39,6 +39,7 @@ import org.monome.pages.gui.MonomeFrame;
 
 import org.monome.pages.midi.MidiDeviceFactory;
 import org.monome.pages.pages.Page;
+import org.monome.pages.pages.QuadrantsPage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -1045,6 +1046,10 @@ public class MonomeConfiguration extends OSCDeviceConfiguration<Page> {
 			this.patternBanks.add(pageNum, new PatternBank(this.sizeX, this.pages.get(pageNum)));
 		}
 		this.patternBanks.get(pageNum).setPatternLength(length);
+		if (this.pages.get(pageNum) instanceof QuadrantsPage) {
+			QuadrantsPage page = (QuadrantsPage) this.pages.get(pageNum);
+			page.setPatternLength(length);
+		}
 	}
 	
 	public void setQuantization(int pageNum, int quantization) {
@@ -1052,6 +1057,10 @@ public class MonomeConfiguration extends OSCDeviceConfiguration<Page> {
 			this.patternBanks.add(pageNum, new PatternBank(this.sizeX, this.pages.get(pageNum)));
 		}
 		this.patternBanks.get(pageNum).setQuantization(quantization);
+		if (this.pages.get(pageNum) instanceof QuadrantsPage) {
+			QuadrantsPage page = (QuadrantsPage) this.pages.get(pageNum);
+			page.setQuantization(quantization);
+		}
 	}
 
 	/**

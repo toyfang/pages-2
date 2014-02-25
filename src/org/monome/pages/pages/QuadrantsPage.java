@@ -194,6 +194,20 @@ public class QuadrantsPage implements Page, Serializable {
 		}
 		return quadNum;
 	}
+	
+	public void setQuantization(int q) {
+		for (int i = 0; i < quadrantConfigurations.get(gui.selectedQuadConf).getNumQuads(); i++) {
+			FakeMonomeConfiguration monomeConfig = quadrantConfigurations.get(gui.selectedQuadConf).getMonomeConfiguration(i);
+			monomeConfig.setQuantization(monomeConfig.curPage, q);
+		}
+	}
+
+	public void setPatternLength(int q) {
+		for (int i = 0; i < quadrantConfigurations.get(gui.selectedQuadConf).getNumQuads(); i++) {
+			FakeMonomeConfiguration monomeConfig = quadrantConfigurations.get(gui.selectedQuadConf).getMonomeConfiguration(i);
+			monomeConfig.setQuantization(monomeConfig.curPage, q);
+		}
+	}
 
 	public void handleReset() {
 		for (int j = 0; j < quadrantConfigurations.get(gui.selectedQuadConf).getNumQuads(); j++) {

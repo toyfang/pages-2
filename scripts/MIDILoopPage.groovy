@@ -1,9 +1,5 @@
 import org.monome.pages.api.Command
 import org.monome.pages.api.GroovyAPI
-import org.monome.pages.pages.ArcPage
-import org.monome.pages.pages.arc.GroovyPage
-import org.monome.pages.configuration.ArcConfiguration
-import org.monome.pages.configuration.ArcConfigurationFactory
 
 class MIDILoopPage extends GroovyAPI {
 
@@ -15,16 +11,18 @@ class MIDILoopPage extends GroovyAPI {
     def lengths = []
     int baseMidiChannel = 12
 
-    String prefix = "/m0000226"
-
     void init() {
         log("MIDILoopPage starting up")
         for (int i = 0; i < sizeX(); i++) {
-            buffers[i] = new MIDIBuffer()
+            buffers[i] = null
+            if (i % 2 == 0) {
+                lengths[i] = 4*96
+            } else {
+                lengths[i] = 8*96
+            }
         }
         for (int i = 0; i < sizeX() / 2; i++) {
             programNums[i] = 0
-            lengths[i] = 192
         }
         redraw()
     }
@@ -36,7 +34,6 @@ class MIDILoopPage extends GroovyAPI {
     void press(int x, int y, int val) {
         if (val == 1) {
             if (y < sizeY() - 4) {
-                sendCommandToArc(new Command("stopCC", x))
                 int oldX = x - (x % 2)
                 if (programNums[(int) (x / 2)] >= 4) {
                     oldX++
@@ -44,14 +41,15 @@ class MIDILoopPage extends GroovyAPI {
                 int oldY = (programNums[(int) (x / 2)] % 4)
                 led(oldX, oldY, 0)
                 int progNum = y + ((x % 2) * 4)
-                log("program change on " + ((int) (x / 2) + 2) + " / " + progNum)
-                programChange(progNum, progNum, (int) (x / 2) + 2)
+                int ccVal = progNum * 16
+                ccOut((int) (x / 2), ccVal, baseMidiChannel + (int) (x / 2))
+                //programChange(progNum, progNum, (int) (x / 2) + 2)
                 programNums[(int) (x / 2)] = progNum
                 led(x, y, 1)
             }
             if (y > sizeY() - 5 && y < sizeY() - 1) {
                 if (oldBuffers[x] != null && oldBuffers[x][2 - (y - sizeY() + 4)] != null) {
-                    int channel = 2 + (activeBuffer / 2)
+                    int channel = baseMidiChannel + (activeBuffer / 2)
                     for (int i = 0; i < buffers[activeBuffer].playingNotes.size(); i++) {
                         MIDINote note = buffers[activeBuffer].playingNotes[i]
                         noteOut(note.note, note.velocity, channel, 0)
@@ -60,12 +58,13 @@ class MIDILoopPage extends GroovyAPI {
                     MIDIBuffer tmpBuffer = buffers[x]
                     buffers[x] = oldBuffers[x][2 - (y - sizeY() + 4)]
                     oldBuffers[x][2 - (y - sizeY() + 4)] = tmpBuffer
-                    if (x == activeBuffer) {
+                    if (buffers[x] != null && x == activeBuffer) {
                         buffers[x].recording = 1
-                    } else {
+                    } else if (buffers[x] != null) {
                         buffers[x].recording = 0
                     }
                 }
+                redraw()
             }
             if (y == sizeY() - 1) {
                 activateBuffer(x)
@@ -76,26 +75,33 @@ class MIDILoopPage extends GroovyAPI {
 
     void activateBuffer(int buf) {
         if (activeBuffer == buf) {
-            int channel = (activeBuffer / 2) + 2
-            for (int i = 0; i < buffers[activeBuffer].playingNotes.size(); i++) {
-                MIDINote note = buffers[activeBuffer].playingNotes[i]
-                noteOut(note.note, note.velocity, channel, 0)
+            if (buffers[activeBuffer] == null) {
+                buffers[activeBuffer] = new MIDIBuffer()
+                buffers[activeBuffer].length = lengths[(int) (activeBuffer / 2)]
+            } else {
+                int channel = (activeBuffer / 2) + baseMidiChannel
+                for (int i = 0; i < buffers[activeBuffer].playingNotes.size(); i++) {
+                    MIDINote note = buffers[activeBuffer].playingNotes[i]
+                    noteOut(note.note, note.velocity, channel, 0)
+                }
+                buffers[activeBuffer].playingNotes = []
+                buffers[activeBuffer].recording = 0
+                if (oldBuffers[activeBuffer] == null) {
+                    oldBuffers[activeBuffer] = []
+                }
+                oldBuffers[activeBuffer][2] = oldBuffers[activeBuffer][1]
+                oldBuffers[activeBuffer][1] = oldBuffers[activeBuffer][0]
+                oldBuffers[activeBuffer][0] = buffers[activeBuffer]
+                buffers[activeBuffer] = null
             }
-            buffers[activeBuffer].playingNotes = []
-            buffers[activeBuffer].recording = 0
-            if (oldBuffers[activeBuffer] == null) {
-                oldBuffers[activeBuffer] = []
-            }
-            oldBuffers[activeBuffer][2] = oldBuffers[activeBuffer][1]
-            oldBuffers[activeBuffer][1] = oldBuffers[activeBuffer][0]
-            oldBuffers[activeBuffer][0] = buffers[activeBuffer]
-            buffers[activeBuffer] = new MIDIBuffer()
-            buffers[activeBuffer].length = lengths[(int) (activeBuffer / 2)]
         }
-        buffers[activeBuffer].recording = 0
-        buffers[buf].recording = 1
+        if (buffers[activeBuffer]) {
+          buffers[activeBuffer].recording = 0
+        }
+        if (buffers[buf]) {
+          buffers[buf].recording = 1
+        }
         activeBuffer = buf
-        sendCommandToArc(new Command("activeLooper", buf))
     }
 
     void redraw() {
@@ -123,18 +129,21 @@ class MIDILoopPage extends GroovyAPI {
         }
         // bottom row
         for (int x = 0; x < sizeX(); x++) {
-            if (buffers[x].recording) {
+            if (buffers[x] != null && buffers[x].recording) {
                 if (tickNum % 24 < 12) {
                     led(x, sizeY() - 1, 1)
                 } else {
                     led(x, sizeY() - 1, 0)
                 }
             } else {
-                if (buffers[x].hasNotes) {
+                if (buffers[x] != null && buffers[x].hasNotes) {
                     led(x, sizeY() - 1, 1)
                 } else {
                     led(x, sizeY() - 1, 0)
                 }
+            }
+            if (buffers[x] == null && x == activeBuffer) {
+              led(x, sizeY() - 1, 1)
             }
         }
     }
@@ -142,12 +151,12 @@ class MIDILoopPage extends GroovyAPI {
     void note(int num, int velo, int chan, int on) {
         if (chan != 12) return
         if (velo < 40) velo = 40
-        if (activeBuffer >= 0) {
+        if (activeBuffer >= 0 && buffers[activeBuffer] != null) {
             int channel = (activeBuffer / 2) + baseMidiChannel
             buffers[activeBuffer].setNote(tickNum % buffers[activeBuffer].length, new MIDINote(num, velo, on))
             noteOut(num, velo, channel, on)
         } else {
-            noteOut(num, velo, baseMidiChannel, on)
+            noteOut(num, velo, baseMidiChannel + (int) (activeBuffer / 2), on)
         }
     }
 
@@ -192,29 +201,6 @@ class MIDILoopPage extends GroovyAPI {
         tickNum = -1
     }
     
-    void sendCommand(Command cmd) {
-        if (cmd.getCmd().equalsIgnoreCase("length")) {
-            buffers[activeBuffer].length = (Integer) cmd.getParam()
-            lengths[(int) (activeBuffer / 2)] = (Integer) cmd.getParam()
-            if (tickNum > buffers[activeBuffer].length) tickNum = tickNum % buffers[activeBuffer].length
-            redraw()
-        }
-    }
-
-    void sendCommandToArc(Command command) {
-        ArcConfiguration arc = getMyArc()
-        if (arc == null) return
-        ArcPage page = arc.pages.get(arc.curPage)
-        if (page instanceof GroovyPage) {
-            ((GroovyPage) page).theApp.sendCommand(command)
-        }
-    }
-
-    ArcConfiguration getMyArc() {
-        ArcConfiguration arc = ArcConfigurationFactory.getArcConfiguration(prefix)
-        return arc
-    }
-
     class MIDIBuffer {
         public int length = 2*96
         public int recording = 0

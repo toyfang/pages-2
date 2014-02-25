@@ -398,21 +398,21 @@ public class MonomeFrame extends JInternalFrame implements Serializable, DeviceF
 							return;
 						}
 						if (option.equals("1/96")) {
-							monomeConfig.patternBanks.get(monomeConfig.curPage).setQuantization(1);
+							monomeConfig.setQuantization(monomeConfig.curPage, 1);
 						} else if (option.equals("1/48")) {
-							monomeConfig.patternBanks.get(monomeConfig.curPage).setQuantization(2);
+							monomeConfig.setQuantization(monomeConfig.curPage, 2);
 						} else if (option.equals("1/32")) {
-							monomeConfig.patternBanks.get(monomeConfig.curPage).setQuantization(3);
+							monomeConfig.setQuantization(monomeConfig.curPage, 3);
 						} else if (option.equals("1/16")) {
-							monomeConfig.patternBanks.get(monomeConfig.curPage).setQuantization(6);
+							monomeConfig.setQuantization(monomeConfig.curPage, 6);
 						} else if (option.equals("1/8")) {
-							monomeConfig.patternBanks.get(monomeConfig.curPage).setQuantization(12);
+							monomeConfig.setQuantization(monomeConfig.curPage, 12);
 						} else if (option.equals("1/4")) {
-							monomeConfig.patternBanks.get(monomeConfig.curPage).setQuantization(24);
+							monomeConfig.setQuantization(monomeConfig.curPage, 24);
 						} else if (option.equals("1/2")) {
-							monomeConfig.patternBanks.get(monomeConfig.curPage).setQuantization(48);
+							monomeConfig.setQuantization(monomeConfig.curPage, 48);
 						} else if (option.equals("1")) {
-							monomeConfig.patternBanks.get(monomeConfig.curPage).setQuantization(96);
+							monomeConfig.setQuantization(monomeConfig.curPage, 96);
 						}
 					}
 				}
@@ -450,7 +450,7 @@ public class MonomeFrame extends JInternalFrame implements Serializable, DeviceF
 						try {
 							int iLength = Integer.parseInt(length);
 							if (iLength > 0 && iLength <= 16) {
-								monomeConfig.patternBanks.get(monomeConfig.curPage).setPatternLength(iLength);
+								monomeConfig.setPatternLength(monomeConfig.curPage, iLength);
 							}
 						} catch (NumberFormatException ex) {
 							return;
